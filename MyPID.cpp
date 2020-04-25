@@ -48,6 +48,9 @@ float MyPID::updateController(float newError)
 	// D term
 	float derivative = (newError - lastError) / deltaTime;
 	lastError = newError;
+
+	if (enableDerivativeLPF_flag)
+		derivative = derivativeLPF.update(derivative); // Low-pass filter
 	
 	return newError*params.kP + integral + derivative*params.kD;
 }
@@ -124,6 +127,13 @@ void MyPID::resetController()
 {
 	lastError = 0;
 	integral = 0;
+}
+
+
+void MyPID::setDerivativeLowPassFilterParams(float cutOffFrequency)
+{
+	enableDerivativeLPF_flag = true;
+	derivativeLPF.reconfigureFilter(cutOffFrequency, this->deltaTime);
 }
 
 

@@ -6,11 +6,9 @@
 #ifndef _MYPID_h
 #define _MYPID_h
 
-#if defined(ARDUINO) && ARDUINO >= 100
-	#include "arduino.h"
-#else
-	#include "WProgram.h"
-#endif
+#include "arduino.h"
+#include "LowPassFilter.h"
+
 
 
 class MyPID
@@ -33,6 +31,8 @@ class MyPID
 		void setDeltaTime(float);
 		float getDeltaTime();
 		void resetController();
+
+		void setDerivativeLowPassFilterParams(float cutOffFrequency); // enables drivative LPF filter and set it up
 		
 		
 		
@@ -49,7 +49,9 @@ class MyPID
 			float kD;
 			uint16_t Imax;
 		} params;
-		
+
+		bool enableDerivativeLPF_flag = false;
+		LowPassFilter derivativeLPF; // derivative low-pass filter
 };
 
 
