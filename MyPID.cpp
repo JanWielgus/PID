@@ -33,7 +33,7 @@ MyPID::MyPID(float deltaTime, float kP, float kI, float kD, uint16_t Imax)
 }
 
 
-float MyPID::updateController(float setPoint, float measured);
+float MyPID::updateController(float setPoint, float measured)
 {
 	return updateController(setPoint - measured);
 }
