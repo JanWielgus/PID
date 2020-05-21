@@ -16,8 +16,8 @@ class MyPID
 	public:
 		MyPID(uint16_t interval, float kP=0.0, float kI=0.0, float kD=0.0, uint16_t Imax=0); // interval in milliseconds
 		MyPID(float deltaTime, float kP=0.0, float kI=0.0, float kD=0.0, uint16_t Imax=0);
-		float updateController(float); // newError
-		float updateController(float, float); // setPoint, newValue
+		float updateController(float newError); // newError
+		float updateController(float setPoint, float measured);
 		void setParameters(float, float, float, uint16_t);
 		void set_kP(float);
 		void set_kI(float);
