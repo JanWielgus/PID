@@ -8,19 +8,19 @@
 
 MyPID::MyPID(float deltaTime, float kP, float kI, float kD, uint16_t Imax)
 {
-	setParameters(kP, kI, kD, Imax);
+	setGains(kP, kI, kD, Imax);
 	setDeltaTime(deltaTime);
 	reset();
 }
 
 
-float MyPID::updateController(float setPoint, float measurement)
+float MyPID::update(float setpoint, float measurement)
 {
-	return updateController(setPoint - measurement);
+	return update(setpoint - measurement);
 }
 
 
-float MyPID::updateController(float newError)
+float MyPID::update(float newError)
 {
 	// I term
 	integral += (newError * kI) * deltaTime;
@@ -38,7 +38,7 @@ float MyPID::updateController(float newError)
 }
 
 
-void MyPID::setParameters(float kP, float kI, float kD, uint16_t Imax)
+void MyPID::setGains(float kP, float kI, float kD, uint16_t Imax)
 {
 	set_kP(kP);
 	set_kI(kI);
