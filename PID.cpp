@@ -3,7 +3,7 @@
   Created by Jan Wielgus, October 6, 2018.
 */
 
-#include <MyPID.h>
+#include <PID.h>
 
 
 MyPID::MyPID(float deltaTime, float kP, float kI, float kD, uint16_t Imax)
