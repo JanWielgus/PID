@@ -33,9 +33,9 @@ MyPID::MyPID(float deltaTime, float kP, float kI, float kD, uint16_t Imax)
 }
 
 
-float MyPID::updateController(float setPoint, float newValue)
+float MyPID::updateController(float setPoint, float measured)
 {
-	return updateController(setPoint-newValue);
+	return updateController(setPoint - measured);
 }
 
 
@@ -48,6 +48,9 @@ float MyPID::updateController(float newError)
 	// D term
 	float derivative = (newError - lastError) / deltaTime;
 	lastError = newError;
+
+	if (enableDerivativeLPF_flag)
+		derivative = derivativeLPF.update(derivative); // Low-pass filter
 	
 	return newError*params.kP + integral + derivative*params.kD;
 }
@@ -127,6 +130,14 @@ void MyPID::resetController()
 }
 
 
+void MyPID::setupDerivativeLowPassFilter(float cutOffFrequency)
+{
+	enableDerivativeLPF_flag = true;
+	derivativeLPF.reconfigureFilter(cutOffFrequency, this->deltaTime);
+}
 
 
-
+void MyPID::disableDerivativeLowPassFilter()
+{
+	enableDerivativeLPF_flag = false;
+}

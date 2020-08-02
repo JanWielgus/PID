@@ -6,11 +6,9 @@
 #ifndef _MYPID_h
 #define _MYPID_h
 
-#if defined(ARDUINO) && ARDUINO >= 100
-	#include "arduino.h"
-#else
-	#include "WProgram.h"
-#endif
+#include "arduino.h"
+#include <LowPassFilter.h>
+
 
 
 class MyPID
@@ -18,8 +16,8 @@ class MyPID
 	public:
 		MyPID(uint16_t interval, float kP=0.0, float kI=0.0, float kD=0.0, uint16_t Imax=0); // interval in milliseconds
 		MyPID(float deltaTime, float kP=0.0, float kI=0.0, float kD=0.0, uint16_t Imax=0);
-		float updateController(float); // newError
-		float updateController(float, float); // setPoint, newValue
+		float updateController(float newError); // newError
+		float updateController(float setPoint, float measured);
 		void setParameters(float, float, float, uint16_t);
 		void set_kP(float);
 		void set_kI(float);
@@ -33,11 +31,13 @@ class MyPID
 		void setDeltaTime(float);
 		float getDeltaTime();
 		void resetController();
+
+		void setupDerivativeLowPassFilter(float cutOffFrequency); // enables drivative LPF filter and set it up
+		void disableDerivativeLowPassFilter(); // disables derivative low-pass filter
 		
 		
 		
 	private:
-		//static double deltaT; // [s]
 		float lastError;
 		float integral;
 		float deltaTime;
@@ -49,9 +49,10 @@ class MyPID
 			float kD;
 			uint16_t Imax;
 		} params;
-		
+
+		bool enableDerivativeLPF_flag = false;
+		LowPassFilter<float> derivativeLPF; // derivative low-pass filter
 };
 
 
 #endif
-
