@@ -5,58 +5,40 @@
 
 #include <MyPID.h>
 
-MyPID::MyPID(uint16_t interval, float kP, float kI, float kD, uint16_t Imax)
-{
-	this->params.kP = kP;
-	this->params.kI = kI;
-	this->params.kD = kD;
-	this->params.Imax = Imax;
-	this->deltaTime = interval * 0.001;
-	
-	// defaults:
-	lastError = 0;
-	integral = 0;
-}
-
 
 MyPID::MyPID(float deltaTime, float kP, float kI, float kD, uint16_t Imax)
 {
-	this->params.kP = kP;
-	this->params.kI = kI;
-	this->params.kD = kD;
-	this->params.Imax = Imax;
-	this->deltaTime = deltaTime;
-	
-	// defaults:
-	lastError = 0;
-	integral = 0;
+	setGains(kP, kI, kD, Imax);
+	setDeltaTime(deltaTime);
+	reset();
 }
 
 
-float MyPID::updateController(float setPoint, float measured)
+float MyPID::update(float setpoint, float measurement)
 {
-	return updateController(setPoint - measured);
+	return update(setpoint - measurement);
 }
 
 
-float MyPID::updateController(float newError)
+float MyPID::update(float newError)
 {
 	// I term
-	integral += (newError * params.kI) * deltaTime;
-	integral = constrain(integral, -params.Imax, params.Imax); // Anti wind-up term
+	integral += (newError * kI) * deltaTime;
+	integral = constrain(integral, -Imax, Imax); // Anti wind-up term
 	
 	// D term
 	float derivative = (newError - lastError) / deltaTime;
 	lastError = newError;
 
+	// D term low-pass filter
 	if (enableDerivativeLPF_flag)
 		derivative = derivativeLPF.update(derivative); // Low-pass filter
 	
-	return newError*params.kP + integral + derivative*params.kD;
+	return newError * kP + integral + derivative * kD;
 }
 
 
-void MyPID::setParameters(float kP, float kI, float kD, uint16_t Imax)
+void MyPID::setGains(float kP, float kI, float kD, uint16_t Imax)
 {
 	set_kP(kP);
 	set_kI(kI);
@@ -66,54 +48,48 @@ void MyPID::setParameters(float kP, float kI, float kD, uint16_t Imax)
 
 void MyPID::set_kP(float kP)
 {
-	this->params.kP = kP;
+	this->kP = kP;
 }
 
 void MyPID::set_kI(float kI)
 {
-	this->params.kI = kI;
+	this->kI = kI;
 }
 
 void MyPID::set_kD(float kD)
 {
-	this->params.kD = kD;
+	this->kD = kD;
 }
 
 void MyPID:: set_Imax(uint16_t imax)
 {
-	this->params.Imax = imax;
+	this->Imax = imax;
 }
 
 float MyPID::get_kP()
 {
-	return params.kP;
+	return kP;
 }
 
 float MyPID::get_kI()
 {
-	return params.kI;
+	return kI;
 }
 
 float MyPID::get_kD()
 {
-	return params.kD;
+	return kD;
 }
 
 uint16_t MyPID::get_Imax()
 {
-	return params.Imax;
+	return Imax;
 }
 
 
-void MyPID::setInterval(uint16_t interval)
+void MyPID::setDeltaTime(float deltaTime)
 {
-	this->deltaTime = interval * 0.001;
-}
-
-
-void MyPID::setDeltaTime(float deltaTIme)
-{
-	this->deltaTime = deltaTIme;
+	this->deltaTime = deltaTime;
 }
 
 
@@ -123,7 +99,7 @@ float MyPID::getDeltaTime()
 }
 
 
-void MyPID::resetController()
+void MyPID::reset()
 {
 	lastError = 0;
 	integral = 0;
