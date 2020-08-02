@@ -1,20 +1,20 @@
 /**
- * @file MyPID.h
+ * @file PID.h
  * @author Jan Wielgus
  * @brief My PID controller library
  * @date 2018-10-06 edited 2020-08-02
  * 
  */
 
-#ifndef _MYPID_h
-#define _MYPID_h
+#ifndef _PID_h
+#define _PID_h
 
 #include "arduino.h"
-#include <LowPassFilter.h>
+#include <LowPassFilter.h> // https://github.com/ColyberCompany/FilteringLibraries
 
 
 
-class MyPID
+class PID
 {
 public:
 	/**
@@ -26,7 +26,7 @@ public:
 	 * @param kD Derivative gain
 	 * @param Imax (+/-) maximum value of integral term
 	 */
-	MyPID(float deltaTime, float kP=0.0f, float kI=0.0f, float kD=0.0f, uint16_t Imax=0);
+	PID(float deltaTime, float kP=0.0f, float kI=0.0f, float kD=0.0f, uint16_t Imax=0);
 
 	/**
 	 * @brief Updates controller.

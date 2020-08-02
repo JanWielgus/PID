@@ -6,7 +6,7 @@
 #include <PID.h>
 
 
-MyPID::MyPID(float deltaTime, float kP, float kI, float kD, uint16_t Imax)
+PID::PID(float deltaTime, float kP, float kI, float kD, uint16_t Imax)
 {
 	setGains(kP, kI, kD, Imax);
 	setDeltaTime(deltaTime);
@@ -14,13 +14,13 @@ MyPID::MyPID(float deltaTime, float kP, float kI, float kD, uint16_t Imax)
 }
 
 
-float MyPID::update(float setpoint, float measurement)
+float PID::update(float setpoint, float measurement)
 {
 	return update(setpoint - measurement);
 }
 
 
-float MyPID::update(float newError)
+float PID::update(float newError)
 {
 	// I term
 	integral += (newError * kI) * deltaTime;
@@ -38,7 +38,7 @@ float MyPID::update(float newError)
 }
 
 
-void MyPID::setGains(float kP, float kI, float kD, uint16_t Imax)
+void PID::setGains(float kP, float kI, float kD, uint16_t Imax)
 {
 	set_kP(kP);
 	set_kI(kI);
@@ -46,74 +46,74 @@ void MyPID::setGains(float kP, float kI, float kD, uint16_t Imax)
 	set_Imax(Imax);
 }
 
-void MyPID::set_kP(float kP)
+void PID::set_kP(float kP)
 {
 	this->kP = kP;
 }
 
-void MyPID::set_kI(float kI)
+void PID::set_kI(float kI)
 {
 	this->kI = kI;
 }
 
-void MyPID::set_kD(float kD)
+void PID::set_kD(float kD)
 {
 	this->kD = kD;
 }
 
-void MyPID:: set_Imax(uint16_t imax)
+void PID::set_Imax(uint16_t imax)
 {
 	this->Imax = imax;
 }
 
-float MyPID::get_kP()
+float PID::get_kP()
 {
 	return kP;
 }
 
-float MyPID::get_kI()
+float PID::get_kI()
 {
 	return kI;
 }
 
-float MyPID::get_kD()
+float PID::get_kD()
 {
 	return kD;
 }
 
-uint16_t MyPID::get_Imax()
+uint16_t PID::get_Imax()
 {
 	return Imax;
 }
 
 
-void MyPID::setDeltaTime(float deltaTime)
+void PID::setDeltaTime(float deltaTime)
 {
 	this->deltaTime = deltaTime;
 }
 
 
-float MyPID::getDeltaTime()
+float PID::getDeltaTime()
 {
 	return deltaTime;
 }
 
 
-void MyPID::reset()
+void PID::reset()
 {
 	lastError = 0;
 	integral = 0;
 }
 
 
-void MyPID::setupDerivativeLowPassFilter(float cutOffFrequency)
+void PID::setupDerivativeLowPassFilter(float cutOffFrequency)
 {
 	enableDerivativeLPF_flag = true;
 	derivativeLPF.reconfigureFilter(cutOffFrequency, this->deltaTime);
 }
 
 
-void MyPID::disableDerivativeLowPassFilter()
+void PID::disableDerivativeLowPassFilter()
 {
 	enableDerivativeLPF_flag = false;
 }
