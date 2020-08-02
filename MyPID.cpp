@@ -5,19 +5,6 @@
 
 #include <MyPID.h>
 
-MyPID::MyPID(uint16_t interval, float kP, float kI, float kD, uint16_t Imax)
-{
-	this->params.kP = kP;
-	this->params.kI = kI;
-	this->params.kD = kD;
-	this->params.Imax = Imax;
-	this->deltaTime = interval * 0.001;
-	
-	// defaults:
-	lastError = 0;
-	integral = 0;
-}
-
 
 MyPID::MyPID(float deltaTime, float kP, float kI, float kD, uint16_t Imax)
 {
@@ -27,15 +14,13 @@ MyPID::MyPID(float deltaTime, float kP, float kI, float kD, uint16_t Imax)
 	this->params.Imax = Imax;
 	this->deltaTime = deltaTime;
 	
-	// defaults:
-	lastError = 0;
-	integral = 0;
+	reset();
 }
 
 
-float MyPID::updateController(float setPoint, float measured)
+float MyPID::updateController(float setPoint, float measurement)
 {
-	return updateController(setPoint - measured);
+	return updateController(setPoint - measurement);
 }
 
 
@@ -105,15 +90,9 @@ uint16_t MyPID::get_Imax()
 }
 
 
-void MyPID::setInterval(uint16_t interval)
+void MyPID::setDeltaTime(float deltaTime)
 {
-	this->deltaTime = interval * 0.001;
-}
-
-
-void MyPID::setDeltaTime(float deltaTIme)
-{
-	this->deltaTime = deltaTIme;
+	this->deltaTime = deltaTime;
 }
 
 
@@ -123,7 +102,7 @@ float MyPID::getDeltaTime()
 }
 
 
-void MyPID::resetController()
+void MyPID::reset()
 {
 	lastError = 0;
 	integral = 0;
