@@ -1,7 +1,10 @@
-/*
-  MyPID.h - PID library
-  Created by Jan Wielgus, October 6, 2018.
-*/
+/**
+ * @file MyPID.h
+ * @author Jan Wielgus
+ * @brief My PID controller library
+ * @date 2018-10-06 edited 2020-08-02
+ * 
+ */
 
 #ifndef _MYPID_h
 #define _MYPID_h
