@@ -130,13 +130,14 @@ void MyPID::resetController()
 }
 
 
-void MyPID::setDerivativeLowPassFilterParams(float cutOffFrequency)
+void MyPID::setupDerivativeLowPassFilter(float cutOffFrequency)
 {
 	enableDerivativeLPF_flag = true;
 	derivativeLPF.reconfigureFilter(cutOffFrequency, this->deltaTime);
 }
 
 
-
-
-
+void MyPID::disableDerivativeLowPassFilter()
+{
+	enableDerivativeLPF_flag = false;
+}

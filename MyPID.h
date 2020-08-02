@@ -7,7 +7,7 @@
 #define _MYPID_h
 
 #include "arduino.h"
-#include "LowPassFilter.h"
+#include <LowPassFilter.h>
 
 
 
@@ -32,12 +32,12 @@ class MyPID
 		float getDeltaTime();
 		void resetController();
 
-		void setDerivativeLowPassFilterParams(float cutOffFrequency); // enables drivative LPF filter and set it up
+		void setupDerivativeLowPassFilter(float cutOffFrequency); // enables drivative LPF filter and set it up
+		void disableDerivativeLowPassFilter(); // disables derivative low-pass filter
 		
 		
 		
 	private:
-		//static double deltaT; // [s]
 		float lastError;
 		float integral;
 		float deltaTime;
@@ -51,9 +51,8 @@ class MyPID
 		} params;
 
 		bool enableDerivativeLPF_flag = false;
-		LowPassFilter derivativeLPF; // derivative low-pass filter
+		LowPassFilter<float> derivativeLPF; // derivative low-pass filter
 };
 
 
 #endif
-
