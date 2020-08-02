@@ -40,14 +40,13 @@ class MyPID
 		float integral;
 		float deltaTime;
 		
-		struct
-		{
-			float kP;
-			float kI;
-			float kD;
-			uint16_t Imax;
-		} params;
+		// PID parameters:
+		float kP;
+		float kI;
+		float kD;
+		uint16_t Imax;
 
+		// Derivative filter parts:
 		bool enableDerivativeLPF_flag = false;
 		LowPassFilter<float> derivativeLPF; // derivative low-pass filter
 };
