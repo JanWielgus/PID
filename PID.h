@@ -9,7 +9,7 @@
 #ifndef _PID_h
 #define _PID_h
 
-#include "arduino.h"
+#include "Arduino.h"
 #include <LowPassFilter.h> // https://github.com/ColyberCompany/FilteringLibraries
 
 
