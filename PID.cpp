@@ -4,12 +4,17 @@
 */
 
 #include <PID.h>
+#include <math.h>
+
+#ifndef constrain
+#define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
+#endif
 
 
-PID::PID(float deltaTime, float kP, float kI, float kD, uint16_t Imax)
+PID::PID(float deltaTime, float kP, float kI, float kD, float imax, float cutOffFreq_Hz)
 {
-	setGains(kP, kI, kD, Imax);
 	setDeltaTime(deltaTime);
+	setGains(kP, kI, kD, imax, cutOffFreq_Hz);
 	reset();
 }
 
@@ -24,26 +29,28 @@ float PID::update(float newError)
 {
 	// I term
 	integral += (newError * kI) * deltaTime;
-	integral = constrain(integral, -Imax, Imax); // Anti wind-up term
+	integral = constrain(integral, -imax, imax); // Anti wind-up term
 	
 	// D term
-	float derivative = (newError - lastError) / deltaTime;
-	lastError = newError;
+	float newDerivative = (newError - lastError) / deltaTime;
+	if (lpf_ePow == 0.f)
+		derivative = newDerivative;
+	else
+		derivative += (newDerivative - derivative) * lpf_ePow;
 
-	// D term low-pass filter
-	if (enableDerivativeLPF_flag)
-		derivative = derivativeLPF.update(derivative); // Low-pass filter
+	lastError = newError;
 	
 	return newError * kP + integral + derivative * kD;
 }
 
 
-void PID::setGains(float kP, float kI, float kD, uint16_t Imax)
+void PID::setGains(float kP, float kI, float kD, float imax, float cutOffFreq_Hz)
 {
 	set_kP(kP);
 	set_kI(kI);
 	set_kD(kD);
-	set_Imax(Imax);
+	set_Imax(imax);
+	set_cutOffFreq(cutOffFreq_Hz);
 }
 
 void PID::set_kP(float kP)
@@ -61,9 +68,17 @@ void PID::set_kD(float kD)
 	this->kD = kD;
 }
 
-void PID::set_Imax(uint16_t imax)
+void PID::set_Imax(float imax)
 {
-	this->Imax = imax;
+	this->imax = imax;
+}
+
+void PID::set_cutOffFreq(float cutOffFreq_Hz)
+{
+	if (cutOffFreq_Hz <= 0)
+		lpf_ePow = 0;
+	else
+		lpf_ePow = 1 - exp(-deltaTime * 2 * M_PI * cutOffFreq_Hz);
 }
 
 float PID::get_kP()
@@ -81,9 +96,9 @@ float PID::get_kD()
 	return kD;
 }
 
-uint16_t PID::get_Imax()
+float PID::get_Imax()
 {
-	return Imax;
+	return imax;
 }
 
 
@@ -103,17 +118,6 @@ void PID::reset()
 {
 	lastError = 0;
 	integral = 0;
-}
-
-
-void PID::setupDerivativeLowPassFilter(float cutOffFrequency)
-{
-	enableDerivativeLPF_flag = true;
-	derivativeLPF.reconfigureFilter(cutOffFrequency, this->deltaTime);
-}
-
-
-void PID::disableDerivativeLowPassFilter()
-{
-	enableDerivativeLPF_flag = false;
+	derivative = 0;
+	lpf_ePow = 0;
 }
