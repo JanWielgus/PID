@@ -11,6 +11,20 @@
 
 class PID
 {
+	float deltaTime;
+	float lastError;
+	float integral;
+
+	// D Low-Pass Filter:
+	float derivative;
+	float lpf_ePow = 0.f;
+	
+	// PID parameters:
+	float kP;
+	float kI;
+	float kD;
+	float imax;
+
 public:
 	/**
 	 * @brief Construct new PID object.
@@ -80,22 +94,6 @@ public:
 	 * @brief Resets controller (do not reset gain values).
 	 */
 	void reset();
-	
-	
-private:
-	float deltaTime;
-	float lastError;
-	float integral;
-
-	// D Low-Pass Filter:
-	float derivative;
-	float lpf_ePow = 0.f;
-	
-	// PID parameters:
-	float kP;
-	float kI;
-	float kD;
-	float imax;
 };
 
 
