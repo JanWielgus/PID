@@ -11,6 +11,8 @@
 
 class PID
 {
+	friend class PIDAssess;
+
 	float deltaTime;
 	float lastError;
 	float integral;
