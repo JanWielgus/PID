@@ -9,6 +9,7 @@
 #define PIDASSESS_h
 
 #include "PID.h"
+#include <stdint.h>
 
 
 /**
@@ -20,6 +21,7 @@ class PIDAssess
     float assessment;
 
     // helper:
+    uint32_t samplesAmt = 0;
     float errorIntegral;
 
 public:
@@ -37,14 +39,14 @@ public:
     {
         if (!pid)
             return;
-
+        
+        samplesAmt++;
         float error = pid->lastError;
-        float error2 = error * error;
 
-        errorIntegral += error2;
+        errorIntegral += error;
         // TODO: include oscilations (how?)
 
-        assessment = errorIntegral; // + other components
+        assessment = (errorIntegral / samplesAmt); // + other components
         return assessment;
     }
 
@@ -54,6 +56,14 @@ public:
     float getCurrentAssessment()
     {
         return assessment;
+    }
+
+    /**
+     * @brief Get how many samples were used in assessment.
+     */
+    float getSamplesAmt()
+    {
+        return samplesAmt;
     }
 
     /**
