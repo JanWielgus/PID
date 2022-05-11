@@ -63,7 +63,17 @@ public:
 	 * @param cutOffFreq_Hz cut-off frequency of derivative low-pass filter [Hz]
 	 * (0 to disable).
 	 */
-	void setGains(float kP, float kI, float kD, float imax, float cutOffFilter_Hz = 0.f);
+	void setGains(float kP, float kI, float kD, float imax, float cutOffFilter_Hz);
+
+	/**
+	 * @brief Set gains for PID controller parts
+	 * (derivative low-pass filter cut-off frequency remains unchanged).
+	 * @param kP Proportional gain
+	 * @param kI Integral gain
+	 * @param kD Derivative gain
+	 * @param imax (+/-) maximum value of integral term
+	 */
+	void setGains(float kP, float kI, float kD, float imax);
 
 	void set_kP(float kP);
 	void set_kI(float kI);
@@ -74,7 +84,7 @@ public:
 	 * @brief Set cut-off frequency of derivative low-pass filter [Hz]
 	 * (0 to disable).
 	 */
-	void set_cutOffFreq(float cutOffFreq_Hz);
+	void set_derivCutoffFreq(float cutOffFreq_Hz);
 
 	float get_kP();
 	float get_kI();

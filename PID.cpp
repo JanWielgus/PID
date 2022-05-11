@@ -46,11 +46,16 @@ float PID::update(float newError)
 
 void PID::setGains(float kP, float kI, float kD, float imax, float cutOffFreq_Hz)
 {
+	setGains(kP, kI, kD, imax);
+	set_derivCutoffFreq(cutOffFreq_Hz);
+}
+
+void PID::setGains(float kP, float kI, float kD, float imax)
+{
 	set_kP(kP);
 	set_kI(kI);
 	set_kD(kD);
 	set_Imax(imax);
-	set_cutOffFreq(cutOffFreq_Hz);
 }
 
 void PID::set_kP(float kP)
@@ -73,7 +78,7 @@ void PID::set_Imax(float imax)
 	this->imax = imax;
 }
 
-void PID::set_cutOffFreq(float cutOffFreq_Hz)
+void PID::set_derivCutoffFreq(float cutOffFreq_Hz)
 {
 	if (cutOffFreq_Hz <= 0)
 		lpf_ePow = 0;
